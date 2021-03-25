@@ -45,18 +45,18 @@ public interface CustomerService {
 
     /**
      * 申请配送资格
-     * @param customer
+     * @param id
      * @return
      */
-    public Customer applyToDistributor(Customer customer);
+    public Customer applyToDistributor(Long id);
 
     /**
      * 确认配送资格
-     * @param customer
+     * @param id
      * @param status(2:通过，9：不通过)
      * @return
      */
-    public Customer confirmToDistributor(Customer customer, Integer status) throws Exception;
+    public Boolean confirmToDistributor(Long id, Integer status) throws Exception;
 
 //    注册、登录、顾客列表（分页）、顾客详情、修改顾客，申请配送资格，确认配送资格
 

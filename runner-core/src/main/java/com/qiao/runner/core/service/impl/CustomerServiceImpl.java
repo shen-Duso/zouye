@@ -1,7 +1,7 @@
 package com.qiao.runner.core.service.impl;
 
 import com.qiao.runner.core.domain.Customer;
-import com.qiao.runner.core.repository.CustomerRespository;
+import com.qiao.runner.core.repository.CustomerRepository;
 import com.qiao.runner.core.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,54 +12,59 @@ import org.springframework.stereotype.Service;
 public class CustomerServiceImpl implements CustomerService{
 
     @Autowired
-    private CustomerRespository customerRespository;
+    private CustomerRepository customerRepository;
 
     @Override
     public Customer register(Customer customer) {
-        return customerRespository.save(customer);
+        return customerRepository.save(customer);
     }
 
     @Override
     public Customer login(String username, String password) {
-        return customerRespository.findByUsernameAndPassword(username, password);
+        return customerRepository.findByUsernameAndPassword(username, password);
     }
 
     @Override
     public Page<Customer> list(Pageable pageable) {
-        return customerRespository.findAll(pageable);
+        return customerRepository.findAll(pageable);
     }
 
     @Override
     public Customer get(Long id) {
-        return customerRespository.getOne(id);
+        return customerRepository.getOne(id);
     }
 
     @Override
     public Customer update(Customer customer) {
-        return customerRespository.save(customer);
+        return customerRepository.save(customer);
     }
 
     @Override
-    public Customer applyToDistributor(Customer customer) {
+    public Customer applyToDistributor(Long id) {
+
+        //通过id获取顾客信息
+        Customer customer = customerRepository.findOne(id);
+        //修改申请状态
         customer.setApplyStatus(1);
-        return customerRespository.save(customer);
+        //保存修改
+        return customerRepository.save(customer);
     }
 
     @Override
-    public Customer confirmToDistributor(Customer customer, Integer status) throws Exception {
-        //有相关的业务判断
+    public Boolean confirmToDistributor(Long id, Integer status) throws Exception {
+        //通过id获取顾客信息
+        Customer customer = customerRepository.findOne(id);
+        //修改申请状态
         if (status == 2){
             customer.setApplyStatus(status);
             customer.setType(2);
-            return customerRespository.save(customer);
-        }else if (status == 9){
+            return true;
+        }else if(status == 9){
             customer.setApplyStatus(status);
-            customer.setType(1);
-            return customerRespository.save(customer);
-        }else{
-            //抛出异常
-            throw  new Exception("参数错误");
-        }
+            return false;
 
+        }else{
+            throw new Exception("参数错误");
+        }
     }
 }
