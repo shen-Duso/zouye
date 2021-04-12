@@ -1,4 +1,4 @@
-package com.qiao.runner.interceptor;
+package com.qiao.runner.web.interceptor;
 
 import com.qiao.runner.core.domain.Customer;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
-package com.qiao.runner.config;
+package com.qiao.runner.web.config;
 
-import com.qiao.runner.interceptor.LoginInterceptor;
+import com.qiao.runner.web.interceptor.LoginInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

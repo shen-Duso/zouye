@@ -3,27 +3,33 @@ package com.qiao.runner.core.service.impl;
 import com.qiao.runner.core.domain.Customer;
 import com.qiao.runner.core.domain.Manager;
 import com.qiao.runner.core.domain.Order;
+import com.qiao.runner.core.repository.CustomerRepository;
 import com.qiao.runner.core.repository.OrderRepository;
 import com.qiao.runner.core.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Service
-public class OrderServiceImpl implements OrderService{
+public class OrderServiceImpl implements OrderService {
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Autowired
     private OrderRepository orderRepository;
 
+    @Transient
     @Override
     public Order create(Order order, Long customerId) {
         //
         //Customer customer = customerRespository.findOne(customerId);
 //      谁下单、哪个时间下单
-        Customer customer = new Customer(customerId);
+        Customer customer = customerRepository.findOne(customerId);
 
         order.setStatus(1);
         order.setCreator(customer);
@@ -41,6 +47,7 @@ public class OrderServiceImpl implements OrderService{
         return orderRepository.findOne(id);
     }
 
+    @Transient
     @Override
     public Order confirmByCustomer(Long orderId) {
 //        由客户确认订单，订单状态改为5：已收货
@@ -50,6 +57,7 @@ public class OrderServiceImpl implements OrderService{
         return orderRepository.save(order);
     }
 
+    @Transient
     @Override
     public Order evaluate(Long orderId, String evaluateContent) {
         Order order = orderRepository.findOne(orderId);
@@ -59,6 +67,7 @@ public class OrderServiceImpl implements OrderService{
         return orderRepository.save(order);
     }
 
+    @Transient
     @Override
     public Order claim(Long orderId) {
         //配送员认领订单，订单状态改为3：配送中
@@ -68,6 +77,7 @@ public class OrderServiceImpl implements OrderService{
         return orderRepository.save(order);
     }
 
+    @Transient
     @Override
     public Order confirmByDistributor(Long orderId) {
         //由配送员确认收货，订单状态改为4：已送达
@@ -77,11 +87,13 @@ public class OrderServiceImpl implements OrderService{
         return orderRepository.save(order);
     }
 
+    @Transient
     @Override
     public Order modify(Order order) {
         return orderRepository.save(order);
     }
 
+    @Transient
     @Override
     public Order assign(Long orderId, Long assignorId, Long designeeId) {
         Manager manager = new Manager(assignorId);
@@ -96,5 +108,18 @@ public class OrderServiceImpl implements OrderService{
         order.setAssignTime(new Date());
 
         return orderRepository.save(order);
+    }
+
+    @Override
+    public Page<Order> listForCustomer(Long customerId, Pageable pageable) {
+        //创建Example实例
+        Customer creator = customerRepository.findOne(customerId);
+        return orderRepository.findByCreator(creator, pageable);
+    }
+
+    @Override
+    public Page<Order> listForDistributor(Long distributorId, Pageable pageable) {
+        Customer distributor = customerRepository.findOne(distributorId);
+        return orderRepository.findByDesignee(distributor, pageable);
     }
 }
