@@ -1,4 +1,4 @@
-package com.azthink.runner;
+package com.qiao.runner;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

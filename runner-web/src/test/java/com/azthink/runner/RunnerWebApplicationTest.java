@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
 /**
  * 初始化数据，创建完数据库后执行该测试类即可。
  */
@@ -85,5 +84,17 @@ public class RunnerWebApplicationTest {
         Order orderResult6 = orderService.evaluate(orderResult5.getId(), "这是我的评价");
 
         Assert.assertNotNull(orderResult6);
+    }
+
+    @Test
+    public void testAddManager(){
+        //管理员
+        Manager manager = new Manager();
+        manager.setUsername("admin");
+        manager.setNickname("后台管理员");
+        manager.setPassword("123456");
+        manager.setMobile("123456789");
+        Manager managerResult = managerService.create(manager);
+        Assert.assertNotNull(manager);
     }
 }
